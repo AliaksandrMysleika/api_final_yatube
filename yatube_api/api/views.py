@@ -103,9 +103,11 @@ class FollowViewSet(ModelViewSet):
         return self.request.user.follower.all()
 
     def perform_create(self, serializer):
-        if serializer.is_valid() and (
-            (serializer.validated_data['following'] == self.request.user)):
-            raise serializers.ValidationError('Нельзя подписываться на себя!')
+        if serializer.is_valid():
+            if serializer.validated_data['following'] == self.request.user:
+                raise serializers.ValidationError(
+                    'Нельзя подписываться на себя!'
+                )
         serializer.save(user=self.request.user)
 
 
